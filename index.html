@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Duolingo風 英語学習アプリ</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!-- ヘッダー -->
+  <header>
+    <h1>Duolingo風 英語学習</h1>
+  </header>
+
+  <!-- ステージ選択画面 -->
+  <section id="stage-selection">
+    <h2>ステージを選択</h2>
+    <div id="stages-list"></div>
+  </section>
+
+  <!-- レッスン選択画面 -->
+  <section id="lesson-selection" class="hidden">
+    <h2 id="stage-title"></h2>
+    <h3>レッスンを選択</h3>
+    <div id="lessons-list"></div>
+    <button class="back-btn" onclick="backToStages()">＜ ステージに戻る</button>
+  </section>
+
+  <!-- レッスン（問題）画面 -->
+  <section id="lesson-container" class="hidden">
+    <div class="lesson-header">
+      <h2 id="lesson-title"></h2>
+      <div id="progress-bar">
+        <div id="progress"></div>
+      </div>
+    </div>
+    <div id="question-container"></div>
+    <div class="btn-group">
+      <button id="next-btn" onclick="nextQuestion()" disabled>次へ</button>
+      <button class="back-btn" onclick="backToLessons()">＜ レッスンに戻る</button>
+    </div>
+  </section>
+
+  <script src="app.js"></script>
+</body>
+</html>
