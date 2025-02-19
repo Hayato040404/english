@@ -1,0 +1,145 @@
+/* ベーススタイル */
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  background-color: #f0f8f5;
+  text-align: center;
+}
+
+/* ヘッダー */
+header {
+  background-color: #58cc02;
+  padding: 20px;
+  color: #fff;
+}
+
+/* セクションの共通スタイル */
+section {
+  width: 90%;
+  max-width: 600px;
+  margin: 30px auto;
+  background-color: #fff;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+}
+.hidden {
+  display: none;
+}
+
+/* ステージ・レッスン選択 */
+#stages-list, #lessons-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 15px;
+}
+
+.stage, .lesson {
+  background-color: #e7f4e4;
+  border: 2px solid #c8e6c9;
+  border-radius: 8px;
+  padding: 15px;
+  width: 40%;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+.stage:hover, .lesson:hover {
+  background-color: #d0f0c0;
+}
+
+/* レッスン画面 */
+.lesson-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+/* 進捗バー */
+#progress-bar {
+  width: 80%;
+  background-color: #eee;
+  border-radius: 20px;
+  margin-top: 10px;
+  height: 12px;
+  overflow: hidden;
+}
+#progress {
+  height: 100%;
+  background-color: #58cc02;
+  width: 0%;
+  transition: width 0.3s;
+}
+
+/* 問題表示 */
+.question {
+  font-size: 1.2em;
+  margin-bottom: 20px;
+}
+
+/* 選択肢スタイル */
+.options {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.option {
+  background-color: #fafafa;
+  border: 2px solid #ddd;
+  border-radius: 6px;
+  padding: 10px;
+  width: 80%;
+  margin: 8px 0;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+.option:hover {
+  background-color: #f1f1f1;
+}
+
+/* ライティング問題 */
+.writing-answer {
+  width: 80%;
+  padding: 10px;
+  font-size: 1em;
+  border: 2px solid #ddd;
+  border-radius: 6px;
+  margin-bottom: 15px;
+}
+
+/* ボタン */
+button {
+  padding: 10px 20px;
+  background-color: #58cc02;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 1em;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+button:hover {
+  background-color: #4caf50;
+}
+.back-btn {
+  background-color: #999;
+  margin-top: 15px;
+}
+.back-btn:hover {
+  background-color: #777;
+}
+
+.btn-group {
+  margin-top: 20px;
+}
+
+/* レスポンシブ対応 */
+@media (max-width: 600px) {
+  .stage, .lesson {
+    width: 80%;
+  }
+}
