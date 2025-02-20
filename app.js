@@ -1,12 +1,11 @@
 // ───────── 自動生成エンジン ─────────
-// 各レッスンは generator 関数により、ランダムな英文・日本語訳・テンプレートで自動生成されます
+// 各トピックは generator 関数で自動生成され、英文、和訳、テンプレートなどを提供
 
 const grammarRules = {
-  // 挨拶（Greetings）
   greetings: {
     type: "translation",
     generator: function() {
-      const greetingsList = [
+      const list = [
         { en: "Hello", jp: "こんにちは" },
         { en: "Good morning", jp: "おはようございます" },
         { en: "Good afternoon", jp: "こんにちは" },
@@ -19,16 +18,15 @@ const grammarRules = {
         'What is the English for "{jp}"?',
         '英語で「{jp}」は何と言いますか？'
       ];
-      const item = greetingsList[Math.floor(Math.random() * greetingsList.length)];
-      const templateStr = templates[Math.floor(Math.random() * templates.length)];
-      return { ...item, template: templateStr };
+      const item = list[Math.floor(Math.random() * list.length)];
+      const tmpl = templates[Math.floor(Math.random() * templates.length)];
+      return { ...item, template: tmpl };
     }
   },
-  // 一般的なフレーズ（Phrases）
   phrases: {
     type: "translation",
     generator: function() {
-      const phrasesList = [
+      const list = [
         { en: "Thank you", jp: "ありがとう" },
         { en: "Excuse me", jp: "すみません" },
         { en: "I'm sorry", jp: "ごめんなさい" },
@@ -42,12 +40,11 @@ const grammarRules = {
         'How do you say "{jp}" in English?',
         '「{jp}」を英語で表現すると？'
       ];
-      const item = phrasesList[Math.floor(Math.random() * phrasesList.length)];
-      const templateStr = templates[Math.floor(Math.random() * templates.length)];
-      return { ...item, template: templateStr };
+      const item = list[Math.floor(Math.random() * list.length)];
+      const tmpl = templates[Math.floor(Math.random() * templates.length)];
+      return { ...item, template: tmpl };
     }
   },
-  // 現在進行形（Present Continuous）
   presentContinuous: {
     type: "sentence",
     generator: function() {
@@ -72,19 +69,18 @@ const grammarRules = {
       const subj = subjects[Math.floor(Math.random() * subjects.length)];
       const verb = verbs[Math.floor(Math.random() * verbs.length)];
       const obj = objects[Math.floor(Math.random() * objects.length)];
-      const be = (subj === "I") ? "am" : (["He", "She"].includes(subj) ? "is" : "are");
-      const enSentence = `${subj} ${be} ${verb.ing} ${obj.en}.`;
+      const be = (subj === "I") ? "am" : (["He","She"].includes(subj) ? "is" : "are");
+      const enText = `${subj} ${be} ${verb.ing} ${obj.en}.`;
       const jpSubjects = { "I": "私は", "He": "彼は", "She": "彼女は", "We": "私たちは", "They": "彼らは" };
-      const jpSentence = `${jpSubjects[subj]}${obj.jp}${verb.jp}。`;
+      const jpText = `${jpSubjects[subj]}${obj.jp}${verb.jp}。`;
       const templates = [
         'Translate the sentence "{jp}" into English in the present continuous form.',
         '「{jp}」を現在進行形の英文に変換せよ。'
       ];
-      const templateStr = templates[Math.floor(Math.random() * templates.length)];
-      return { jp: jpSentence, en: enSentence, template: templateStr };
+      const tmpl = templates[Math.floor(Math.random() * templates.length)];
+      return { jp: jpText, en: enText, template: tmpl };
     }
   },
-  // be動詞（Be Verb）
   beVerb: {
     type: "fill-in-the-blank",
     generator: function() {
@@ -95,14 +91,8 @@ const grammarRules = {
         { answer: "are", jp: "～です（複数の場合）" }
       ];
       const subj = subjects[Math.floor(Math.random() * subjects.length)];
-      let candidates;
-      if (subj === "I") {
-        candidates = forms.filter(f => f.answer === "am");
-      } else if (["He", "She"].includes(subj)) {
-        candidates = forms.filter(f => f.answer === "is");
-      } else {
-        candidates = forms.filter(f => f.answer === "are");
-      }
+      let candidates = subj === "I" ? forms.filter(f => f.answer === "am") :
+                        (["He", "She"].includes(subj) ? forms.filter(f => f.answer === "is") : forms.filter(f => f.answer === "are"));
       const chosen = candidates[0];
       const jpSubjects = { "I": "私は", "He": "彼は", "She": "彼女は", "We": "私たちは", "They": "彼らは" };
       const sentence = `${subj} ___ happy.`;
@@ -110,11 +100,10 @@ const grammarRules = {
         'Complete the sentence: "{sentence}"',
         '次の英文の空欄を埋めよ："{sentence}"'
       ];
-      const templateStr = templates[Math.floor(Math.random() * templates.length)];
-      return { sentence, answer: chosen.answer, template: templateStr };
+      const tmpl = templates[Math.floor(Math.random() * templates.length)];
+      return { sentence, answer: chosen.answer, template: tmpl };
     }
   },
-  // will の使い方（Will）
   will: {
     type: "fill-in-the-blank",
     generator: function() {
@@ -139,11 +128,10 @@ const grammarRules = {
         'Complete the sentence: "{sentence}"',
         '次の文の空欄を埋めよ："{sentence}"'
       ];
-      const templateStr = templates[Math.floor(Math.random() * templates.length)];
-      return { sentence, answer: "will", template: templateStr };
+      const tmpl = templates[Math.floor(Math.random() * templates.length)];
+      return { sentence, answer: "will", template: tmpl };
     }
   },
-  // 過去形（Math）
   past: {
     type: "math",
     generator: function() {
@@ -152,7 +140,6 @@ const grammarRules = {
       return { num1, num2, answer: (num1 + num2).toString(), template: 'What is {num1} + {num2}?' };
     }
   },
-  // 未来形（Future）
   future: {
     type: "verb",
     generator: function() {
@@ -169,11 +156,10 @@ const grammarRules = {
         '「{base}」の未来形は何ですか？'
       ];
       const verb = verbs[Math.floor(Math.random() * verbs.length)];
-      const templateStr = templates[Math.floor(Math.random() * templates.length)];
-      return { ...verb, template: templateStr };
+      const tmpl = templates[Math.floor(Math.random() * templates.length)];
+      return { ...verb, template: tmpl };
     }
   },
-  // 助動詞（Modals）
   modals: {
     type: "fill-in-the-blank",
     generator: function() {
@@ -189,11 +175,10 @@ const grammarRules = {
         '適切な助動詞を入れて次の文を完成させよ："{sentence}"'
       ];
       const item = sentences[Math.floor(Math.random() * sentences.length)];
-      const templateStr = templates[Math.floor(Math.random() * templates.length)];
-      return { ...item, template: templateStr };
+      const tmpl = templates[Math.floor(Math.random() * templates.length)];
+      return { ...item, template: tmpl };
     }
   },
-  // 比較級（Comparative）
   comparative: {
     type: "fill-in-the-blank",
     generator: function() {
@@ -219,11 +204,10 @@ const grammarRules = {
         'Fill in the blank with the correct comparative form: "{sentence}"',
         '適切な比較級を入れて次の文を完成させよ："{sentence}"'
       ];
-      const templateStr = templates[Math.floor(Math.random() * templates.length)];
-      return { sentence, answer: adj.comparative, template: templateStr };
+      const tmpl = templates[Math.floor(Math.random() * templates.length)];
+      return { sentence, answer: adj.comparative, template: tmpl };
     }
   },
-  // 疑問文の作り方（Question Formation）
   questionFormation: {
     type: "writing",
     generator: function() {
@@ -238,11 +222,10 @@ const grammarRules = {
         '次の平叙文を疑問文に変換せよ："{statement}"'
       ];
       const item = statements[Math.floor(Math.random() * statements.length)];
-      const templateStr = templates[Math.floor(Math.random() * templates.length)];
-      return { ...item, template: templateStr };
+      const tmpl = templates[Math.floor(Math.random() * templates.length)];
+      return { ...item, template: tmpl };
     }
   },
-  // 条件文（Conditional）
   conditional: {
     type: "fill-in-the-blank",
     generator: function() {
@@ -257,11 +240,10 @@ const grammarRules = {
         '次の条件文の空欄を埋めよ："{sentence}"'
       ];
       const item = conditionals[Math.floor(Math.random() * conditionals.length)];
-      const templateStr = templates[Math.floor(Math.random() * templates.length)];
-      return { ...item, template: templateStr };
+      const tmpl = templates[Math.floor(Math.random() * templates.length)];
+      return { ...item, template: tmpl };
     }
   },
-  // 受動態（Passive Voice）
   passiveVoice: {
     type: "writing",
     generator: function() {
@@ -280,24 +262,23 @@ const grammarRules = {
         { text: "a portrait", jp: "肖像画" },
         { text: "the project", jp: "プロジェクト" }
       ];
-      const subject = subjects[Math.floor(Math.random() * subjects.length)];
+      const subj = subjects[Math.floor(Math.random() * subjects.length)];
       const verb = verbs[Math.floor(Math.random() * verbs.length)];
-      const object = objects[Math.floor(Math.random() * objects.length)];
-      const activeSentence = `${subject} ${verb.active} ${object.text}.`;
-      const passiveSentence = `${object.text.charAt(0).toUpperCase() + object.text.slice(1)} ${verb.passive} by ${subject.toLowerCase()}.`;
+      const obj = objects[Math.floor(Math.random() * objects.length)];
+      const activeSentence = `${subj} ${verb.active} ${obj.text}.`;
+      const passiveSentence = `${obj.text.charAt(0).toUpperCase() + obj.text.slice(1)} ${verb.passive} by ${subj.toLowerCase()}.`;
       const templates = [
         'Change the following sentence into passive voice: "{sentence}"',
         '次の文を受動態に書き換えよ："{sentence}"'
       ];
-      const templateStr = templates[Math.floor(Math.random() * templates.length)];
-      return { sentence: activeSentence, answer: passiveSentence, template: templateStr };
+      const tmpl = templates[Math.floor(Math.random() * templates.length)];
+      return { sentence: activeSentence, answer: passiveSentence, template: tmpl };
     }
   },
-  // リスニング問題（Listening）
   listening: {
     type: "listening",
     generator: function() {
-      const sentences = [
+      const list = [
         { en: "The cat is sleeping on the mat.", jp: "猫がマットの上で寝ています" },
         { en: "She is reading a book in the library.", jp: "彼女は図書館で本を読んでいます" },
         { en: "They are playing soccer in the park.", jp: "彼らは公園でサッカーをしています" },
@@ -308,12 +289,11 @@ const grammarRules = {
         'Listen to the audio and type what you hear.',
         'リスニング：音声を聞いて、その内容を入力してください。'
       ];
-      const item = sentences[Math.floor(Math.random() * sentences.length)];
-      const templateStr = templates[Math.floor(Math.random() * templates.length)];
-      return { ...item, template: templateStr };
+      const item = list[Math.floor(Math.random() * list.length)];
+      const tmpl = templates[Math.floor(Math.random() * templates.length)];
+      return { ...item, template: tmpl };
     }
   },
-  // スピーキング（Speaking）重点練習
   speaking: {
     type: "speaking",
     generator: function() {
@@ -329,8 +309,21 @@ const grammarRules = {
         'スピーキング：次の指示に従って話してください：「{jp}」'
       ];
       const item = prompts[Math.floor(Math.random() * prompts.length)];
-      const templateStr = templates[Math.floor(Math.random() * templates.length)];
-      return { ...item, template: templateStr };
+      const tmpl = templates[Math.floor(Math.random() * templates.length)];
+      return { ...item, template: tmpl };
+    }
+  },
+  // Bonus Challenge（コイン消費で挑戦できるボーナス問題）
+  bonus: {
+    type: "bonus",
+    generator: function() {
+      const bonusList = [
+        { question: "Bonus: What is a synonym of 'happy'?", answer: "joyful", hint: "Starts with J" },
+        { question: "Bonus: What is the antonym of 'hot'?", answer: "cold", hint: "Starts with C" },
+        { question: "Bonus: Translate 'ありがとう' into English.", answer: "thank you", hint: "T... you" }
+      ];
+      const item = bonusList[Math.floor(Math.random() * bonusList.length)];
+      return { question: item.question, answer: item.answer, hint: item.hint, template: "{question}" };
     }
   }
 };
@@ -343,11 +336,9 @@ function updatePerformance(topic, isCorrect) {
   if (isCorrect) { data[topic].correct++; }
   localStorage.setItem("performanceData", JSON.stringify(data));
 }
-
 function getPerformanceData() {
   return JSON.parse(localStorage.getItem("performanceData") || "{}");
 }
-
 function getWeakTopics() {
   const data = getPerformanceData();
   const weak = [];
@@ -371,14 +362,12 @@ function addCoins(amount) {
 function getTodayDate() {
   return new Date().toISOString().split("T")[0];
 }
-
 function getDailyLessonStatus() {
   return {
     lastDate: localStorage.getItem("lastDailyLesson"),
     streak: parseInt(localStorage.getItem("dailyStreak") || "0")
   };
 }
-
 function updateDailyLessonStatus() {
   const today = getTodayDate();
   const status = getDailyLessonStatus();
@@ -393,7 +382,6 @@ function updateDailyLessonStatus() {
   addCoins(earnedCoins);
   return { newStreak, earnedCoins, coins: getCoins() };
 }
-
 function generateDailyQuestions(count) {
   const topics = ["greetings", "phrases", "presentContinuous", "beVerb", "will", "modals", "comparative", "conditional", "passiveVoice", "past", "future", "questionFormation", "listening", "speaking"];
   const questions = [];
@@ -452,6 +440,16 @@ function generateQuestion(topic) {
     };
   }
   
+  // Bonus Challengeは専用トピック "bonus"
+  if (topic === "bonus") {
+    return {
+      type: "bonus",
+      question: questionText,
+      answer: correctAnswer,
+      hint: dataItem.hint || (correctAnswer.charAt(0) + "_".repeat(correctAnswer.length - 1))
+    };
+  }
+  
   const qType = Math.random() < 0.5 ? "multiple" : "writing";
   if (qType === "multiple" && rule.generator && rule.type !== "writing") {
     let wrongOptions = [];
@@ -497,9 +495,26 @@ function autoGenerateQuestions(topic, count) {
   return questions;
 }
 
+// ───────── Bonus Challenge 機能 ─────────
+function startBonusChallenge() {
+  if (getCoins() < 15) {
+    document.getElementById("feedback").innerText = "コインが足りません！";
+    document.getElementById("feedback").style.color = "red";
+    return;
+  }
+  addCoins(-15);
+  updateCoinDisplay();
+  // Bonus Challenge専用問題（bonusトピック）
+  const bonusQuestion = generateQuestion("bonus");
+  // ボーナス問題を現在の問題直前に挿入
+  currentQuestions.splice(currentQuestionIndex, 0, bonusQuestion);
+  document.getElementById("feedback").innerText = "Bonus Challenge発動！正解すれば20コイン獲得のチャンス！";
+  document.getElementById("feedback").style.color = "purple";
+}
+
 // ───────── UI処理 ─────────
 
-// 固定ステージ＋苦手なコンテンツ＋新規ステージ（リスニング＆スピーキング重点練習）
+// ステージ定義（Stage 1～5：基礎、中級、上級、リスニング重点、スピーキング重点）
 const stages = [
   {
     name: "Stage 1: 基礎",
@@ -571,7 +586,7 @@ function showStages() {
   }
   dailyBtn.innerText = dailyText;
   
-  // ユーザー保有コイン表示
+  // 保有コイン表示
   const coinDisplay = document.getElementById("coin-display");
   coinDisplay.innerText = `保有コイン: ${getCoins()}`;
   
@@ -693,9 +708,13 @@ function loadQuestion() {
   qElem.innerText = questionData.question;
   container.appendChild(qElem);
   
-  // 【Hint】ボタン表示（writing・listening・speakingなら表示）
+  // 【Hint】ボタン（writing、listening、speakingなら表示）
   const hintBtn = document.getElementById("hint-btn");
   hintBtn.style.display = (questionData.type === "writing" || questionData.type === "listening" || questionData.type === "speaking") ? "inline-block" : "none";
+  
+  // Bonus Challenge ボタンを表示（常に表示）
+  const bonusBtn = document.getElementById("bonus-btn");
+  bonusBtn.style.display = "inline-block";
   
   if (questionData.type === "multiple") {
     const optionsDiv = document.createElement("div");
@@ -778,7 +797,7 @@ function loadQuestion() {
     const input = document.createElement("input");
     input.type = "text";
     input.classList.add("writing-answer");
-    input.placeholder = "模範解答と比較するために入力（任意）...";
+    input.placeholder = "模範解答と比較（任意入力）...";
     container.appendChild(input);
     
     const submitBtn = document.createElement("button");
@@ -805,6 +824,21 @@ function showHint() {
   let hint = qData.answer.charAt(0) + "_".repeat(qData.answer.length - 1);
   document.getElementById("feedback").innerText = "ヒント: " + hint;
   document.getElementById("feedback").style.color = "blue";
+}
+
+function startBonusChallenge() {
+  if (getCoins() < 15) {
+    document.getElementById("feedback").innerText = "コインが足りません！";
+    document.getElementById("feedback").style.color = "red";
+    return;
+  }
+  addCoins(-15);
+  updateCoinDisplay();
+  const bonusQuestion = generateQuestion("bonus");
+  // ボーナス問題を現在の問題直前に挿入
+  currentQuestions.splice(currentQuestionIndex, 0, bonusQuestion);
+  document.getElementById("feedback").innerText = "Bonus Challenge発動！正解で20コイン獲得のチャンス！";
+  document.getElementById("feedback").style.color = "purple";
 }
 
 function checkMultipleAnswer(element, selectedOption) {
@@ -838,6 +872,12 @@ function checkWritingAnswer(userInput) {
     feedbackDiv.innerText = "正解！";
     feedbackDiv.style.color = "green";
     isCorrect = true;
+    // Bonus Challengeの場合、正解で20コイン獲得
+    if (qData.type === "bonus") {
+      addCoins(20);
+      updateCoinDisplay();
+      feedbackDiv.innerText += " Bonus獲得！20コインゲット！";
+    }
   } else {
     feedbackDiv.innerText = "不正解。正しい答えは「" + qData.answer + "」です。";
     feedbackDiv.style.color = "red";
@@ -887,5 +927,487 @@ function generateDailyQuestions(count) {
   }
   return questions;
 }
+
+// ───────── 設定＆アップデート履歴 ─────────
+function resetData() {
+  if (confirm("本当にデータをリセットしますか？")) {
+    localStorage.clear();
+    location.reload();
+  }
+}
+function showUpdateHistory() {
+  document.getElementById("update-history").classList.remove("hidden");
+}
+function hideUpdateHistory() {
+  document.getElementById("update-history").classList.add("hidden");
+}
+
+// ───────── UIステージ定義 ─────────
+const stages = [
+  {
+    name: "Stage 1: 基礎",
+    lessons: [
+      { name: "Lesson 1: 挨拶", topic: "greetings" },
+      { name: "Lesson 2: 一般的なフレーズ", topic: "phrases" },
+      { name: "Lesson 3: be動詞", topic: "beVerb" }
+    ]
+  },
+  {
+    name: "Stage 2: 中級",
+    lessons: [
+      { name: "Lesson 1: 過去形", topic: "past" },
+      { name: "Lesson 2: 未来形", topic: "future" },
+      { name: "Lesson 3: 現在進行形", topic: "presentContinuous" },
+      { name: "Lesson 4: will の使い方", topic: "will" }
+    ]
+  },
+  {
+    name: "Stage 3: 上級",
+    lessons: [
+      { name: "Lesson 1: 助動詞 (Modals)", topic: "modals" },
+      { name: "Lesson 2: 比較級 (Comparatives)", topic: "comparative" },
+      { name: "Lesson 3: 疑問文の作り方", topic: "questionFormation" },
+      { name: "Lesson 4: 条件文 (Conditionals)", topic: "conditional" },
+      { name: "Lesson 5: 受動態 (Passive Voice)", topic: "passiveVoice" }
+    ]
+  },
+  {
+    name: "Stage 4: リスニング重点練習",
+    lessons: [
+      { name: "Lesson 1: リスニング集中", topic: "listening" }
+    ]
+  },
+  {
+    name: "Stage 5: スピーキング重点練習",
+    lessons: [
+      { name: "Lesson 1: スピーキング挑戦", topic: "speaking" }
+    ]
+  }
+];
+
+let currentStageIndex = null;
+let currentLessonIndex = null;
+let currentQuestions = [];
+let currentQuestionIndex = 0;
+let currentTopic = null;
+
+function showStages() {
+  hideAllSections();
+  document.getElementById("stage-selection").classList.remove("hidden");
+  const stagesList = document.getElementById("stages-list");
+  stagesList.innerHTML = "";
+  
+  // Daily Lesson ボタン設定
+  const dailyBtn = document.getElementById("daily-lesson-btn");
+  const dailyStatus = getDailyLessonStatus();
+  const today = getTodayDate();
+  let dailyText = "Daily Lesson";
+  if (dailyStatus.lastDate === today) {
+    dailyText += ` (完了済み / Streak: ${dailyStatus.streak}日)`;
+    dailyBtn.style.opacity = "0.6";
+    dailyBtn.style.pointerEvents = "none";
+  } else {
+    dailyText += " (今日のレッスン)";
+    dailyBtn.style.opacity = "1";
+    dailyBtn.style.pointerEvents = "auto";
+    dailyBtn.onclick = startDailyLesson;
+  }
+  dailyBtn.innerText = dailyText;
+  
+  // 保有コイン表示
+  const coinDisplay = document.getElementById("coin-display");
+  coinDisplay.innerText = `保有コイン: ${getCoins()}`;
+  
+  // 固定ステージ表示
+  stages.forEach((stage, index) => {
+    const stageDiv = document.createElement("div");
+    stageDiv.classList.add("stage");
+    stageDiv.innerText = stage.name;
+    stageDiv.onclick = () => showLessons(index);
+    stagesList.appendChild(stageDiv);
+  });
+  
+  // 苦手なコンテンツステージ
+  const weakTopics = getWeakTopics();
+  if (weakTopics.length > 0) {
+    const weakStage = document.createElement("div");
+    weakStage.classList.add("stage");
+    weakStage.innerText = "苦手なコンテンツ";
+    weakStage.onclick = showWeakLessons;
+    stagesList.appendChild(weakStage);
+  }
+}
+
+function showLessons(stageIndex) {
+  currentStageIndex = stageIndex;
+  hideAllSections();
+  document.getElementById("lesson-selection").classList.remove("hidden");
+  document.getElementById("stage-title").innerText = stages[stageIndex].name;
+  const lessonsList = document.getElementById("lessons-list");
+  lessonsList.innerHTML = "";
+  stages[stageIndex].lessons.forEach(lesson => {
+    const lessonDiv = document.createElement("div");
+    lessonDiv.classList.add("lesson");
+    lessonDiv.innerText = lesson.name;
+    lessonDiv.onclick = () => startLesson(lesson);
+    lessonsList.appendChild(lessonDiv);
+  });
+}
+
+function showWeakLessons() {
+  hideAllSections();
+  document.getElementById("lesson-selection").classList.remove("hidden");
+  document.getElementById("stage-title").innerText = "苦手なコンテンツ";
+  const lessonsList = document.getElementById("lessons-list");
+  lessonsList.innerHTML = "";
+  const weakTopics = getWeakTopics();
+  if (weakTopics.length === 0) {
+    lessonsList.innerHTML = "<p>苦手なコンテンツはありません！</p>";
+  } else {
+    weakTopics.forEach(topic => {
+      const lessonDiv = document.createElement("div");
+      lessonDiv.classList.add("lesson");
+      lessonDiv.innerText = "苦手: " + topic;
+      lessonDiv.onclick = () => startWeakLesson(topic);
+      lessonsList.appendChild(lessonDiv);
+    });
+  }
+}
+
+function backToStages() {
+  showStages();
+}
+
+function backToLessons() {
+  if (currentStageIndex !== null) {
+    showLessons(currentStageIndex);
+  } else {
+    showWeakLessons();
+  }
+}
+
+function startLesson(lesson) {
+  currentTopic = lesson.topic;
+  hideAllSections();
+  document.getElementById("lesson-container").classList.remove("hidden");
+  document.getElementById("lesson-title").innerText = lesson.name;
+  currentQuestions = autoGenerateQuestions(currentTopic, 10);
+  currentQuestionIndex = 0;
+  addCoins(5);  // 通常レッスン完了で5コイン獲得
+  updateProgress();
+  loadQuestion();
+}
+
+function startDailyLesson() {
+  currentTopic = "daily";
+  hideAllSections();
+  document.getElementById("lesson-container").classList.remove("hidden");
+  document.getElementById("lesson-title").innerText = "Daily Lesson";
+  currentQuestions = generateDailyQuestions(10);
+  currentQuestionIndex = 0;
+  updateProgress();
+  loadQuestion();
+}
+
+function startWeakLesson(topic) {
+  currentTopic = topic;
+  hideAllSections();
+  document.getElementById("lesson-container").classList.remove("hidden");
+  document.getElementById("lesson-title").innerText = "苦手: " + topic;
+  currentQuestions = autoGenerateQuestions(topic, 10);
+  currentQuestionIndex = 0;
+  updateProgress();
+  loadQuestion();
+}
+
+function hideAllSections() {
+  document.getElementById("stage-selection").classList.add("hidden");
+  document.getElementById("lesson-selection").classList.add("hidden");
+  document.getElementById("lesson-container").classList.add("hidden");
+}
+
+function loadQuestion() {
+  document.getElementById("feedback").innerText = "";
+  const questionData = currentQuestions[currentQuestionIndex];
+  const container = document.getElementById("question-container");
+  container.innerHTML = "";
+  const qElem = document.createElement("div");
+  qElem.classList.add("question");
+  qElem.innerText = questionData.question;
+  container.appendChild(qElem);
+  
+  // 【Hint】ボタン表示（writing, listening, speakingなら）
+  const hintBtn = document.getElementById("hint-btn");
+  hintBtn.style.display = (questionData.type === "writing" || questionData.type === "listening" || questionData.type === "speaking") ? "inline-block" : "none";
+  
+  // Bonus Challenge ボタンは常に表示
+  const bonusBtn = document.getElementById("bonus-btn");
+  bonusBtn.style.display = "inline-block";
+  
+  if (questionData.type === "multiple") {
+    const optionsDiv = document.createElement("div");
+    optionsDiv.classList.add("options");
+    questionData.options.forEach(option => {
+      const optElem = document.createElement("div");
+      optElem.classList.add("option");
+      optElem.innerText = option;
+      optElem.onclick = () => checkMultipleAnswer(optElem, option);
+      optionsDiv.appendChild(optElem);
+    });
+    container.appendChild(optionsDiv);
+  } else if (questionData.type === "writing") {
+    const input = document.createElement("input");
+    input.type = "text";
+    input.classList.add("writing-answer");
+    input.placeholder = "答えを入力...";
+    container.appendChild(input);
+    const submitBtn = document.createElement("button");
+    submitBtn.innerText = "採点する";
+    submitBtn.onclick = () => {
+      checkWritingAnswer(input.value);
+      document.getElementById("next-btn").focus();
+    };
+    container.appendChild(submitBtn);
+  } else if (questionData.type === "listening") {
+    const playBtn = document.createElement("button");
+    playBtn.innerText = "再生 / Play Audio";
+    playBtn.onclick = () => {
+      const utterance = new SpeechSynthesisUtterance(questionData.answer);
+      utterance.lang = "en-US";
+      speechSynthesis.speak(utterance);
+    };
+    container.appendChild(playBtn);
+    const replayBtn = document.createElement("button");
+    replayBtn.innerText = "再生リプレイ (2コイン)";
+    replayBtn.onclick = () => {
+      if (getCoins() >= 2) {
+        addCoins(-2);
+        updateCoinDisplay();
+        const utterance = new SpeechSynthesisUtterance(questionData.answer);
+        utterance.lang = "en-US";
+        speechSynthesis.speak(utterance);
+      } else {
+        document.getElementById("feedback").innerText = "コインが足りません！";
+        document.getElementById("feedback").style.color = "red";
+      }
+    };
+    container.appendChild(replayBtn);
+    const input = document.createElement("input");
+    input.type = "text";
+    input.classList.add("writing-answer");
+    input.placeholder = "聞こえた内容を入力...";
+    container.appendChild(input);
+    const submitBtn = document.createElement("button");
+    submitBtn.innerText = "採点する";
+    submitBtn.onclick = () => {
+      checkWritingAnswer(input.value);
+      document.getElementById("next-btn").focus();
+    };
+    container.appendChild(submitBtn);
+  } else if (questionData.type === "speaking") {
+    const playPromptBtn = document.createElement("button");
+    playPromptBtn.innerText = "模範音声再生 / Play Prompt";
+    playPromptBtn.onclick = () => {
+      const utterance = new SpeechSynthesisUtterance(questionData.answer);
+      utterance.lang = "en-US";
+      speechSynthesis.speak(utterance);
+    };
+    container.appendChild(playPromptBtn);
+    const speakingNote = document.createElement("p");
+    speakingNote.innerText = "自分で声に出して練習してください。模範音声を参考にしましょう。";
+    container.appendChild(speakingNote);
+    const input = document.createElement("input");
+    input.type = "text";
+    input.classList.add("writing-answer");
+    input.placeholder = "模範解答と比較（任意入力）...";
+    container.appendChild(input);
+    const submitBtn = document.createElement("button");
+    submitBtn.innerText = "採点する";
+    submitBtn.onclick = () => {
+      checkWritingAnswer(input.value);
+      document.getElementById("next-btn").focus();
+    };
+    container.appendChild(submitBtn);
+  }
+  
+  document.getElementById("next-btn").disabled = false;
+}
+
+function showHint() {
+  if (getCoins() < 5) {
+    document.getElementById("feedback").innerText = "コインが足りません！";
+    document.getElementById("feedback").style.color = "red";
+    return;
+  }
+  addCoins(-5);
+  updateCoinDisplay();
+  const qData = currentQuestions[currentQuestionIndex];
+  let hint = qData.answer.charAt(0) + "_".repeat(qData.answer.length - 1);
+  document.getElementById("feedback").innerText = "ヒント: " + hint;
+  document.getElementById("feedback").style.color = "blue";
+}
+
+function startBonusChallenge() {
+  if (getCoins() < 15) {
+    document.getElementById("feedback").innerText = "コインが足りません！";
+    document.getElementById("feedback").style.color = "red";
+    return;
+  }
+  addCoins(-15);
+  updateCoinDisplay();
+  const bonusQuestion = generateQuestion("bonus");
+  currentQuestions.splice(currentQuestionIndex, 0, bonusQuestion);
+  document.getElementById("feedback").innerText = "Bonus Challenge発動！正解で20コイン獲得のチャンス！";
+  document.getElementById("feedback").style.color = "purple";
+}
+
+function checkMultipleAnswer(element, selectedOption) {
+  const qData = currentQuestions[currentQuestionIndex];
+  const feedbackDiv = document.getElementById("feedback");
+  let isCorrect = false;
+  if (selectedOption === qData.answer) {
+    element.style.backgroundColor = "#a5d6a7";
+    feedbackDiv.innerText = "正解！";
+    feedbackDiv.style.color = "green";
+    isCorrect = true;
+  } else {
+    element.style.backgroundColor = "#ef9a9a";
+    feedbackDiv.innerText = "不正解。正しい答えは「" + qData.answer + "」です。";
+    feedbackDiv.style.color = "red";
+  }
+  updatePerformance(currentTopic, isCorrect);
+  Array.from(document.getElementsByClassName("option")).forEach(opt => {
+    opt.style.pointerEvents = "none";
+  });
+  document.getElementById("next-btn").disabled = false;
+}
+
+function checkWritingAnswer(userInput) {
+  const qData = currentQuestions[currentQuestionIndex];
+  const cleanedInput = userInput.trim().toLowerCase();
+  const correctAnswer = qData.answer.trim().toLowerCase();
+  const feedbackDiv = document.getElementById("feedback");
+  let isCorrect = false;
+  if (cleanedInput === correctAnswer) {
+    feedbackDiv.innerText = "正解！";
+    feedbackDiv.style.color = "green";
+    isCorrect = true;
+    if (qData.type === "bonus") {
+      addCoins(20);
+      updateCoinDisplay();
+      feedbackDiv.innerText += " Bonus獲得！20コインゲット！";
+    }
+  } else {
+    feedbackDiv.innerText = "不正解。正しい答えは「" + qData.answer + "」です。";
+    feedbackDiv.style.color = "red";
+  }
+  updatePerformance(currentTopic, isCorrect);
+  const container = document.getElementById("question-container");
+  Array.from(container.getElementsByTagName("input")).forEach(inp => inp.disabled = true);
+  Array.from(container.getElementsByTagName("button")).forEach(btn => btn.disabled = true);
+  document.getElementById("next-btn").disabled = false;
+}
+
+function nextQuestion() {
+  currentQuestionIndex++;
+  if (currentQuestionIndex < currentQuestions.length) {
+    updateProgress();
+    loadQuestion();
+  } else {
+    if (currentTopic === "daily") {
+      const status = updateDailyLessonStatus();
+      document.getElementById("feedback").innerText = `おめでとう！ ${status.earnedCoins}コイン獲得！ 連続日数: ${status.newStreak}日`;
+    } else if (currentTopic !== "daily") {
+      addCoins(5);
+      document.getElementById("feedback").innerText = "このレッスン完了で5コイン獲得！";
+    }
+    alert("このレッスンは終了です！");
+    backToLessons();
+  }
+}
+
+function updateProgress() {
+  const progressElem = document.getElementById("progress");
+  const progressPercent = ((currentQuestionIndex) / currentQuestions.length) * 100;
+  progressElem.style.width = `${progressPercent}%`;
+}
+
+function updateCoinDisplay() {
+  const coinDisplay = document.getElementById("coin-display");
+  coinDisplay.innerText = `保有コイン: ${getCoins()}`;
+}
+
+function generateDailyQuestions(count) {
+  const topics = ["greetings", "phrases", "presentContinuous", "beVerb", "will", "modals", "comparative", "conditional", "passiveVoice", "past", "future", "questionFormation", "listening", "speaking"];
+  const questions = [];
+  for (let i = 0; i < count; i++) {
+    const randomTopic = topics[Math.floor(Math.random() * topics.length)];
+    questions.push(generateQuestion(randomTopic));
+  }
+  return questions;
+}
+
+// ───────── 設定＆アップデート履歴 ─────────
+function resetData() {
+  if (confirm("本当にデータをリセットしますか？")) {
+    localStorage.clear();
+    location.reload();
+  }
+}
+function showUpdateHistory() {
+  document.getElementById("update-history").classList.remove("hidden");
+}
+function hideUpdateHistory() {
+  document.getElementById("update-history").classList.add("hidden");
+}
+
+// ───────── ステージ定義 ─────────
+const stages = [
+  {
+    name: "Stage 1: 基礎",
+    lessons: [
+      { name: "Lesson 1: 挨拶", topic: "greetings" },
+      { name: "Lesson 2: 一般的なフレーズ", topic: "phrases" },
+      { name: "Lesson 3: be動詞", topic: "beVerb" }
+    ]
+  },
+  {
+    name: "Stage 2: 中級",
+    lessons: [
+      { name: "Lesson 1: 過去形", topic: "past" },
+      { name: "Lesson 2: 未来形", topic: "future" },
+      { name: "Lesson 3: 現在進行形", topic: "presentContinuous" },
+      { name: "Lesson 4: will の使い方", topic: "will" }
+    ]
+  },
+  {
+    name: "Stage 3: 上級",
+    lessons: [
+      { name: "Lesson 1: 助動詞 (Modals)", topic: "modals" },
+      { name: "Lesson 2: 比較級 (Comparatives)", topic: "comparative" },
+      { name: "Lesson 3: 疑問文の作り方", topic: "questionFormation" },
+      { name: "Lesson 4: 条件文 (Conditionals)", topic: "conditional" },
+      { name: "Lesson 5: 受動態 (Passive Voice)", topic: "passiveVoice" }
+    ]
+  },
+  {
+    name: "Stage 4: リスニング重点練習",
+    lessons: [
+      { name: "Lesson 1: リスニング集中", topic: "listening" }
+    ]
+  },
+  {
+    name: "Stage 5: スピーキング重点練習",
+    lessons: [
+      { name: "Lesson 1: スピーキング挑戦", topic: "speaking" }
+    ]
+  }
+];
+
+let currentStageIndex = null;
+let currentLessonIndex = null;
+let currentQuestions = [];
+let currentQuestionIndex = 0;
+let currentTopic = null;
 
 window.onload = showStages;
