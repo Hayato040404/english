@@ -132,7 +132,7 @@ section {
   background-color: #f1f1f1;
 }
 
-/* ライティング / リスニング / スピーキング入力欄 */
+/* 入力欄 */
 .writing-answer {
   width: 80%;
   padding: 10px;
@@ -142,7 +142,7 @@ section {
   margin-bottom: 15px;
 }
 
-/* フィードバック表示 */
+/* フィードバック */
 #feedback {
   margin-top: 15px;
   font-size: 1.2em;
@@ -170,7 +170,16 @@ button:hover {
 .back-btn:hover {
   background-color: #777;
 }
+#bonus-btn {
+  background-color: #9c27b0;
+  border: 2px solid #8e24aa;
+  color: #fff;
+}
+#bonus-btn:hover {
+  background-color: #8e24aa;
+}
 
+/* ボタン配置 */
 .btn-group {
   margin-top: 20px;
 }
@@ -185,13 +194,34 @@ footer {
 footer button {
   background-color: #f44336;
   border: 2px solid #e53935;
-  margin-bottom: 5px;
+  margin: 5px;
 }
 footer button:hover {
   background-color: #e53935;
 }
 
-/* レスポンシブ対応 */
+/* アップデート履歴 */
+#update-history {
+  width: 90%;
+  max-width: 600px;
+  margin: 20px auto;
+  background-color: #fff;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+}
+#update-history ul {
+  list-style: none;
+  padding: 0;
+  text-align: left;
+}
+#update-history li {
+  margin-bottom: 8px;
+  border-bottom: 1px solid #ccc;
+  padding-bottom: 5px;
+}
+
+/* レスポンシブ */
 @media (max-width: 600px) {
   .stage, .lesson {
     width: 80%;
