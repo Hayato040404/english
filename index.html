@@ -4,6 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>demolingo - 英語学習アプリ</title>
+  <!-- Google Fonts 例: Roboto -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:400,500,700">
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -18,7 +20,7 @@
     <h2>ステージを選択</h2>
     <!-- Daily Lesson ボタン -->
     <div id="daily-lesson-btn"></div>
-    <!-- ユーザーの保有コイン表示 -->
+    <!-- ユーザー保有コイン表示 -->
     <div id="coin-display"></div>
     <div id="stages-list"></div>
   </section>
@@ -48,6 +50,12 @@
       <button class="back-btn" onclick="backToLessons()">＜ レッスンに戻る</button>
     </div>
   </section>
+
+  <!-- フッター：設定画面（データリセット等） -->
+  <footer>
+    <button id="reset-btn" onclick="resetData()">Reset Data</button>
+    <p>&copy; demolingo 2025</p>
+  </footer>
 
   <script src="app.js"></script>
 </body>
