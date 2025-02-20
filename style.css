@@ -40,27 +40,36 @@ section {
   display: none;
 }
 
-/* Daily Lesson ボタン */
-#daily-lesson-btn {
+/* Daily Lesson & demolingoMAX Unlock ボタン */
+#daily-lesson-btn,
+#max-unlock-btn {
   margin-bottom: 15px;
   padding: 10px;
-  background-color: #ff9800;
-  border: 2px solid #fb8c00;
   border-radius: 8px;
   cursor: pointer;
   font-size: 1.1em;
   color: #fff;
   transition: background-color 0.2s;
 }
+#daily-lesson-btn {
+  background-color: #ff9800;
+  border: 2px solid #fb8c00;
+}
 #daily-lesson-btn:hover {
   background-color: #fb8c00;
+}
+#max-unlock-btn {
+  background-color: #3f51b5;
+  border: 2px solid #3949ab;
+}
+#max-unlock-btn:hover {
+  background-color: #3949ab;
 }
 
 /* コイン表示 */
 #coin-display {
   margin-bottom: 15px;
   font-size: 1.1em;
-  color: #333;
 }
 
 /* ステージ・レッスン選択 */
@@ -184,22 +193,6 @@ button:hover {
   margin-top: 20px;
 }
 
-/* フッター */
-footer {
-  margin-top: 30px;
-  padding: 10px;
-  background-color: #ddd;
-  font-size: 0.9em;
-}
-footer button {
-  background-color: #f44336;
-  border: 2px solid #e53935;
-  margin: 5px;
-}
-footer button:hover {
-  background-color: #e53935;
-}
-
 /* アップデート履歴 */
 #update-history {
   width: 90%;
@@ -219,6 +212,22 @@ footer button:hover {
   margin-bottom: 8px;
   border-bottom: 1px solid #ccc;
   padding-bottom: 5px;
+}
+
+/* フッター */
+footer {
+  margin-top: 30px;
+  padding: 10px;
+  background-color: #ddd;
+  font-size: 0.9em;
+}
+footer button {
+  background-color: #f44336;
+  border: 2px solid #e53935;
+  margin: 5px;
+}
+footer button:hover {
+  background-color: #e53935;
 }
 
 /* レスポンシブ */
