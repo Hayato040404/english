@@ -15,8 +15,16 @@ header {
   padding: 20px;
   color: #fff;
 }
+header h1 {
+  margin: 0;
+  font-size: 2em;
+}
+header p {
+  margin: 5px 0 0;
+  font-size: 1.2em;
+}
 
-/* セクションの共通スタイル */
+/* セクション共通 */
 section {
   width: 90%;
   max-width: 600px;
@@ -24,10 +32,33 @@ section {
   background-color: #fff;
   border-radius: 10px;
   padding: 20px;
-  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 3px 8px rgba(0,0,0,0.1);
 }
 .hidden {
   display: none;
+}
+
+/* Daily Lesson ボタン */
+#daily-lesson-btn {
+  margin-bottom: 15px;
+  padding: 10px;
+  background-color: #ff9800;
+  border: 2px solid #fb8c00;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1.1em;
+  color: #fff;
+  transition: background-color 0.2s;
+}
+#daily-lesson-btn:hover {
+  background-color: #fb8c00;
+}
+
+/* コイン表示 */
+#coin-display {
+  margin-bottom: 15px;
+  font-size: 1.1em;
+  color: #333;
 }
 
 /* ステージ・レッスン選択 */
@@ -37,7 +68,6 @@ section {
   justify-content: center;
   gap: 15px;
 }
-
 .stage, .lesson {
   background-color: #e7f4e4;
   border: 2px solid #c8e6c9;
@@ -75,13 +105,13 @@ section {
   transition: width 0.3s;
 }
 
-/* 問題表示 */
+/* 問題文 */
 .question {
   font-size: 1.2em;
   margin-bottom: 20px;
 }
 
-/* 選択肢スタイル */
+/* 選択肢 */
 .options {
   display: flex;
   flex-direction: column;
@@ -109,6 +139,13 @@ section {
   border: 2px solid #ddd;
   border-radius: 6px;
   margin-bottom: 15px;
+}
+
+/* フィードバック表示 */
+#feedback {
+  margin-top: 15px;
+  font-size: 1.2em;
+  font-weight: bold;
 }
 
 /* ボタン */
