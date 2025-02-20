@@ -3,18 +3,23 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Duolingo風 英語学習アプリ</title>
+  <title>demolingo - 英語学習アプリ</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <!-- ヘッダー -->
   <header>
-    <h1>Duolingo風 英語学習</h1>
+    <h1>demolingo</h1>
+    <p>毎日続けて、楽しく英語を学ぼう！</p>
   </header>
 
   <!-- ステージ選択画面 -->
   <section id="stage-selection">
     <h2>ステージを選択</h2>
+    <!-- Daily Lesson ボタン -->
+    <div id="daily-lesson-btn"></div>
+    <!-- ユーザーの保有コイン表示 -->
+    <div id="coin-display"></div>
     <div id="stages-list"></div>
   </section>
 
@@ -35,6 +40,8 @@
       </div>
     </div>
     <div id="question-container"></div>
+    <!-- フィードバック表示領域 -->
+    <div id="feedback"></div>
     <div class="btn-group">
       <button id="next-btn" onclick="nextQuestion()" disabled>次へ</button>
       <button class="back-btn" onclick="backToLessons()">＜ レッスンに戻る</button>
