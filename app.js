@@ -1,48 +1,55 @@
 // ───────── 自動生成エンジン ─────────
-// grammarRulesでは、各トピックごとにテンプレートとデータまたは generator 関数を定義しています。
-// 複数のテンプレートや動的生成により、その都度異なる英文と日本語訳が出題されます。
+// すべてのレッスンは generator 関数により、ランダムな英文・日本語訳・テンプレートで自動生成されます
 
 const grammarRules = {
-  // 既存トピック
+  // 挨拶（Greetings）
   greetings: {
     type: "translation",
-    template: [
-      'Translate the phrase "{jp}" into English.',
-      'What is the English for "{jp}"?',
-      '英語で「{jp}」は何と言いますか？'
-    ],
-    data: [
-      { en: "Hello", jp: "こんにちは" },
-      { en: "Good morning", jp: "おはようございます" },
-      { en: "Good afternoon", jp: "こんにちは" },
-      { en: "Good evening", jp: "こんばんは" },
-      { en: "How are you?", jp: "お元気ですか？" },
-      { en: "Hi", jp: "やあ" }
-    ]
+    generator: function() {
+      const greetingsList = [
+        { en: "Hello", jp: "こんにちは" },
+        { en: "Good morning", jp: "おはようございます" },
+        { en: "Good afternoon", jp: "こんにちは" },
+        { en: "Good evening", jp: "こんばんは" },
+        { en: "How are you?", jp: "お元気ですか？" },
+        { en: "Hi", jp: "やあ" }
+      ];
+      const templates = [
+        'Translate the phrase "{jp}" into English.',
+        'What is the English for "{jp}"?',
+        '英語で「{jp}」は何と言いますか？'
+      ];
+      const item = greetingsList[Math.floor(Math.random() * greetingsList.length)];
+      const templateStr = templates[Math.floor(Math.random() * templates.length)];
+      return { ...item, template: templateStr };
+    }
   },
+  // 一般的なフレーズ（Phrases）
   phrases: {
     type: "translation",
-    template: [
-      'Translate the phrase "{jp}" into English.',
-      'How do you say "{jp}" in English?',
-      '「{jp}」を英語で表現すると？'
-    ],
-    data: [
-      { en: "Thank you", jp: "ありがとう" },
-      { en: "Excuse me", jp: "すみません" },
-      { en: "I’m sorry", jp: "ごめんなさい" },
-      { en: "Please", jp: "お願いします" },
-      { en: "Yes", jp: "はい" },
-      { en: "No", jp: "いいえ" },
-      { en: "Goodbye", jp: "さようなら" }
-    ]
+    generator: function() {
+      const phrasesList = [
+        { en: "Thank you", jp: "ありがとう" },
+        { en: "Excuse me", jp: "すみません" },
+        { en: "I'm sorry", jp: "ごめんなさい" },
+        { en: "Please", jp: "お願いします" },
+        { en: "Yes", jp: "はい" },
+        { en: "No", jp: "いいえ" },
+        { en: "Goodbye", jp: "さようなら" }
+      ];
+      const templates = [
+        'Translate the phrase "{jp}" into English.',
+        'How do you say "{jp}" in English?',
+        '「{jp}」を英語で表現すると？'
+      ];
+      const item = phrasesList[Math.floor(Math.random() * phrasesList.length)];
+      const templateStr = templates[Math.floor(Math.random() * templates.length)];
+      return { ...item, template: templateStr };
+    }
   },
+  // 現在進行形（Present Continuous）
   presentContinuous: {
     type: "sentence",
-    template: [
-      'Translate the sentence "{jp}" into English in the present continuous form.',
-      '「{jp}」を現在進行形の英文に変換せよ。'
-    ],
     generator: function() {
       const subjects = ["I", "He", "She", "We", "They"];
       const verbs = [
@@ -69,40 +76,47 @@ const grammarRules = {
       const enSentence = `${subj} ${be} ${verb.ing} ${obj.en}.`;
       const jpSubjects = { "I": "私は", "He": "彼は", "She": "彼女は", "We": "私たちは", "They": "彼らは" };
       const jpSentence = `${jpSubjects[subj]}${obj.jp}${verb.jp}。`;
-      return { jp: jpSentence, en: enSentence };
+      const templates = [
+        'Translate the sentence "{jp}" into English in the present continuous form.',
+        '「{jp}」を現在進行形の英文に変換せよ。'
+      ];
+      const templateStr = templates[Math.floor(Math.random() * templates.length)];
+      return { jp: jpSentence, en: enSentence, template: templateStr };
     }
   },
+  // be動詞（Be Verb）
   beVerb: {
     type: "fill-in-the-blank",
-    template: [
-      'Complete the sentence: "{sentence}"',
-      '次の英文の空欄を埋めよ："{sentence}"'
-    ],
     generator: function() {
       const subjects = ["I", "He", "She", "We", "They"];
-      const adjectives = [
-        { adj: "happy", comparative: "より幸せ", jp: "幸せ" },
-        { adj: "tired", comparative: "より疲れている", jp: "疲れている" },
-        { adj: "smart", comparative: "より賢い", jp: "賢い" },
-        { adj: "a student", jp: "学生" },
-        { adj: "a doctor", jp: "医者" },
-        { adj: "excited", jp: "ワクワクしている" }
+      const forms = [
+        { answer: "am", jp: "～です（私の場合）" },
+        { answer: "is", jp: "～です（彼・彼女の場合）" },
+        { answer: "are", jp: "～です（複数の場合）" }
       ];
       const subj = subjects[Math.floor(Math.random() * subjects.length)];
-      const comp = adjectives[Math.floor(Math.random() * adjectives.length)];
-      const be = (subj === "I") ? "am" : (["He","She"].includes(subj) ? "is" : "are");
-      const sentence = `${subj} ___ ${comp.adj}.`;
+      let candidates;
+      if (subj === "I") {
+        candidates = forms.filter(f => f.answer === "am");
+      } else if (["He", "She"].includes(subj)) {
+        candidates = forms.filter(f => f.answer === "is");
+      } else {
+        candidates = forms.filter(f => f.answer === "are");
+      }
+      const chosen = candidates[0];
       const jpSubjects = { "I": "私は", "He": "彼は", "She": "彼女は", "We": "私たちは", "They": "彼らは" };
-      const jpSentence = `${jpSubjects[subj]}${comp.jp}です。`;
-      return { sentence, answer: be };
+      const sentence = `${subj} ___ happy.`;
+      const templates = [
+        'Complete the sentence: "{sentence}"',
+        '次の英文の空欄を埋めよ："{sentence}"'
+      ];
+      const templateStr = templates[Math.floor(Math.random() * templates.length)];
+      return { sentence, answer: chosen.answer, template: templateStr };
     }
   },
+  // will の使い方（Will）
   will: {
     type: "fill-in-the-blank",
-    template: [
-      'Complete the sentence: "{sentence}"',
-      '次の文の空欄を埋めよ："{sentence}"'
-    ],
     generator: function() {
       const subjects = ["I", "He", "She", "We", "They"];
       const verbs = [
@@ -121,40 +135,47 @@ const grammarRules = {
       const jpSubjects = { "I": "私は", "He": "彼は", "She": "彼女は", "We": "私たちは", "They": "彼らは" };
       const jpTimes = { "tomorrow": "明日", "next week": "来週", "soon": "すぐに", "later": "後で", "in the evening": "夕方に" };
       const jpSentence = `${jpSubjects[subj]}${jpTimes[time]}友達を${verb.jp}。`;
-      return { sentence, answer: "will" };
+      const templates = [
+        'Complete the sentence: "{sentence}"',
+        '次の文の空欄を埋めよ："{sentence}"'
+      ];
+      const templateStr = templates[Math.floor(Math.random() * templates.length)];
+      return { sentence, answer: "will", template: templateStr };
     }
   },
+  // 過去形（Math）
   past: {
     type: "math",
-    template: 'What is {num1} + {num2}?',
     generator: function() {
       const num1 = Math.floor(Math.random() * 10) + 1;
       const num2 = Math.floor(Math.random() * 10) + 1;
-      return { num1, num2, answer: (num1 + num2).toString() };
+      return { num1, num2, answer: (num1 + num2).toString(), template: 'What is {num1} + {num2}?' };
     }
   },
+  // 未来形（Future）
   future: {
     type: "verb",
-    template: [
-      'What is the future form of "{base}"?',
-      '「{base}」の未来形は？'
-    ],
-    data: [
-      { base: "go", future: "will go" },
-      { base: "eat", future: "will eat" },
-      { base: "see", future: "will see" },
-      { base: "do", future: "will do" },
-      { base: "come", future: "will come" },
-      { base: "write", future: "will write" }
-    ]
+    generator: function() {
+      const verbs = [
+        { base: "go", future: "will go", jp: "行く" },
+        { base: "eat", future: "will eat", jp: "食べる" },
+        { base: "see", future: "will see", jp: "見る" },
+        { base: "do", future: "will do", jp: "する" },
+        { base: "come", future: "will come", jp: "来る" },
+        { base: "write", future: "will write", jp: "書く" }
+      ];
+      const templates = [
+        'What is the future form of "{base}"?',
+        '「{base}」の未来形は何ですか？'
+      ];
+      const verb = verbs[Math.floor(Math.random() * verbs.length)];
+      const templateStr = templates[Math.floor(Math.random() * templates.length)];
+      return { ...verb, template: templateStr };
+    }
   },
-  // ── 新規トピック ──
+  // 助動詞（Modals）
   modals: {
     type: "fill-in-the-blank",
-    template: [
-      'Complete the sentence with an appropriate modal: "{sentence}"',
-      '適切な助動詞を入れて次の文を完成させよ："{sentence}"'
-    ],
     generator: function() {
       const sentences = [
         { sentence: "You ____ finish your homework.", answer: "should", jp: "あなたは宿題を終えるべきだ。" },
@@ -163,15 +184,18 @@ const grammarRules = {
         { sentence: "They ____ arrive on time if they hurry.", answer: "can", jp: "急げば彼らは時間通りに到着できる。" },
         { sentence: "We ____ take an umbrella.", answer: "must", jp: "私たちは傘を持っていく必要がある。" }
       ];
-      return sentences[Math.floor(Math.random() * sentences.length)];
+      const templates = [
+        'Complete the sentence with an appropriate modal: "{sentence}"',
+        '適切な助動詞を入れて次の文を完成させよ："{sentence}"'
+      ];
+      const item = sentences[Math.floor(Math.random() * sentences.length)];
+      const templateStr = templates[Math.floor(Math.random() * templates.length)];
+      return { ...item, template: templateStr };
     }
   },
+  // 比較級（Comparative）
   comparative: {
     type: "fill-in-the-blank",
-    template: [
-      'Fill in the blank with the correct comparative form: "{sentence}"',
-      '適切な比較級を入れて次の文を完成させよ："{sentence}"'
-    ],
     generator: function() {
       const adjectives = [
         { positive: "fast", comparative: "faster" },
@@ -191,15 +215,17 @@ const grammarRules = {
       const adj = adjectives[Math.floor(Math.random() * adjectives.length)];
       const pair = items[Math.floor(Math.random() * items.length)];
       const sentence = `${pair.item1} is ____ than ${pair.item2}.`;
-      return { sentence, answer: adj.comparative };
+      const templates = [
+        'Fill in the blank with the correct comparative form: "{sentence}"',
+        '適切な比較級を入れて次の文を完成させよ："{sentence}"'
+      ];
+      const templateStr = templates[Math.floor(Math.random() * templates.length)];
+      return { sentence, answer: adj.comparative, template: templateStr };
     }
   },
+  // 疑問文の作り方（Question Formation）
   questionFormation: {
     type: "writing",
-    template: [
-      'Change the following statement into a question: "{statement}"',
-      '次の平叙文を疑問文に変換せよ："{statement}"'
-    ],
     generator: function() {
       const statements = [
         { statement: "You are coming to the party.", answer: "Are you coming to the party?", jp: "あなたはパーティーに来る。" },
@@ -207,15 +233,18 @@ const grammarRules = {
         { statement: "They have finished their work.", answer: "Have they finished their work?", jp: "彼らは仕事を終えた。" },
         { statement: "She likes ice cream.", answer: "Does she like ice cream?", jp: "彼女はアイスクリームが好きだ。" }
       ];
-      return statements[Math.floor(Math.random() * statements.length)];
+      const templates = [
+        'Change the following statement into a question: "{statement}"',
+        '次の平叙文を疑問文に変換せよ："{statement}"'
+      ];
+      const item = statements[Math.floor(Math.random() * statements.length)];
+      const templateStr = templates[Math.floor(Math.random() * templates.length)];
+      return { ...item, template: templateStr };
     }
   },
+  // 条件文（Conditional）
   conditional: {
     type: "fill-in-the-blank",
-    template: [
-      'Complete the conditional sentence: "{sentence}"',
-      '次の条件文の空欄を埋めよ："{sentence}"'
-    ],
     generator: function() {
       const conditionals = [
         { sentence: "If it rains, we ____ stay at home.", answer: "will", jp: "もし雨が降ったら、私たちは家にいるだろう。" },
@@ -223,34 +252,116 @@ const grammarRules = {
         { sentence: "If you study hard, you ____ pass the exam.", answer: "will", jp: "一生懸命勉強すれば、試験に合格するだろう。" },
         { sentence: "If he were here, he ____ help us.", answer: "would", jp: "もし彼がここにいたら、私たちを助けるだろう。" }
       ];
-      return conditionals[Math.floor(Math.random() * conditionals.length)];
+      const templates = [
+        'Complete the conditional sentence: "{sentence}"',
+        '次の条件文の空欄を埋めよ："{sentence}"'
+      ];
+      const item = conditionals[Math.floor(Math.random() * conditionals.length)];
+      const templateStr = templates[Math.floor(Math.random() * templates.length)];
+      return { ...item, template: templateStr };
     }
   },
+  // 受動態（Passive Voice）
   passiveVoice: {
     type: "writing",
-    template: [
-      'Change the following sentence into passive voice: "{sentence}"',
-      '次の文を受動態に書き換えよ："{sentence}"'
-    ],
     generator: function() {
-      const sentences = [
-        { sentence: "The chef cooks the meal.", answer: "The meal is cooked by the chef.", jp: "シェフが料理を作る。" },
-        { sentence: "The teacher explains the lesson.", answer: "The lesson is explained by the teacher.", jp: "先生が授業を説明する。" },
-        { sentence: "They built the house.", answer: "The house was built by them.", jp: "彼らが家を建てた。" },
-        { sentence: "Someone cleans the room every day.", answer: "The room is cleaned every day.", jp: "毎日誰かが部屋を掃除する。" }
+      const subjects = ["The chef", "The teacher", "The manager", "The artist", "The engineer"];
+      const verbs = [
+        { active: "cooks", passive: "is cooked", base: "cook", jp: "料理する" },
+        { active: "explains", passive: "is explained", base: "explain", jp: "説明する" },
+        { active: "builds", passive: "is built", base: "build", jp: "建てる" },
+        { active: "designs", passive: "is designed", base: "design", jp: "デザインする" },
+        { active: "paints", passive: "is painted", base: "paint", jp: "描く" }
       ];
-      return sentences[Math.floor(Math.random() * sentences.length)];
+      const objects = [
+        { text: "the meal", jp: "料理" },
+        { text: "the lesson", jp: "授業" },
+        { text: "the house", jp: "家" },
+        { text: "a portrait", jp: "肖像画" },
+        { text: "the project", jp: "プロジェクト" }
+      ];
+      const subject = subjects[Math.floor(Math.random() * subjects.length)];
+      const verb = verbs[Math.floor(Math.random() * verbs.length)];
+      const object = objects[Math.floor(Math.random() * objects.length)];
+      const activeSentence = `${subject} ${verb.active} ${object.text}.`;
+      const passiveSentence = `${object.text.charAt(0).toUpperCase() + object.text.slice(1)} ${verb.passive} by ${subject.toLowerCase()}.`;
+      const templates = [
+        'Change the following sentence into passive voice: "{sentence}"',
+        '次の文を受動態に書き換えよ："{sentence}"'
+      ];
+      const templateStr = templates[Math.floor(Math.random() * templates.length)];
+      return { sentence: activeSentence, answer: passiveSentence, template: templateStr };
     }
   }
 };
 
-// generateQuestion()は指定トピックのルールに基づいて1問生成します。
-// generatorがある場合はそれを優先し、テンプレート内の {key} は dataItem の値で置換します。
+// ───────── ユーザー成績管理（localStorage） ─────────
+function updatePerformance(topic, isCorrect) {
+  let data = JSON.parse(localStorage.getItem("performanceData") || "{}");
+  if (!data[topic]) { data[topic] = { correct: 0, total: 0 }; }
+  data[topic].total++;
+  if (isCorrect) { data[topic].correct++; }
+  localStorage.setItem("performanceData", JSON.stringify(data));
+}
 
+function getPerformanceData() {
+  return JSON.parse(localStorage.getItem("performanceData") || "{}");
+}
+
+function getWeakTopics() {
+  const data = getPerformanceData();
+  const weak = [];
+  for (let topic in data) {
+    if (data[topic].total >= 3 && (data[topic].correct / data[topic].total) < 0.6) {
+      weak.push(topic);
+    }
+  }
+  return weak;
+}
+
+// ───────── Daily Lesson 機能 ─────────
+function getTodayDate() {
+  return new Date().toISOString().split("T")[0];
+}
+
+function getDailyLessonStatus() {
+  return {
+    lastDate: localStorage.getItem("lastDailyLesson"),
+    streak: parseInt(localStorage.getItem("dailyStreak") || "0"),
+    coins: parseInt(localStorage.getItem("dailyCoins") || "0")
+  };
+}
+
+function updateDailyLessonStatus() {
+  const today = getTodayDate();
+  const status = getDailyLessonStatus();
+  if (status.lastDate === today) return;
+  const yesterday = new Date();
+  yesterday.setDate(yesterday.getDate() - 1);
+  const yesterdayStr = yesterday.toISOString().split("T")[0];
+  let newStreak = (status.lastDate === yesterdayStr) ? status.streak + 1 : 1;
+  // 毎日レッスンでコインを獲得（例：10コイン＋連続日数ボーナス）
+  const earnedCoins = 10 + newStreak;
+  localStorage.setItem("lastDailyLesson", today);
+  localStorage.setItem("dailyStreak", newStreak.toString());
+  localStorage.setItem("dailyCoins", (status.coins + earnedCoins).toString());
+  return { newStreak, earnedCoins };
+}
+
+function generateDailyQuestions(count) {
+  const topics = ["greetings", "phrases", "presentContinuous", "beVerb", "will", "modals", "comparative", "conditional", "passiveVoice", "past", "future", "questionFormation"];
+  const questions = [];
+  for (let i = 0; i < count; i++) {
+    const randomTopic = topics[Math.floor(Math.random() * topics.length)];
+    questions.push(generateQuestion(randomTopic));
+  }
+  return questions;
+}
+
+// ───────── 問題生成 ─────────
 function generateQuestion(topic) {
   const rule = grammarRules[topic];
   if (!rule) {
-    // 未定義トピックは算数問題にフォールバック
     const num1 = Math.floor(Math.random() * 10) + 1;
     const num2 = Math.floor(Math.random() * 10) + 1;
     return {
@@ -261,20 +372,10 @@ function generateQuestion(topic) {
     };
   }
   
-  // generatorがあれば使用、なければdataからランダム取得
-  let dataItem;
-  if (rule.generator) {
-    dataItem = rule.generator();
-  } else if (rule.data) {
-    dataItem = rule.data[Math.floor(Math.random() * rule.data.length)];
-  } else {
-    dataItem = {};
-  }
-  
-  // テンプレートが配列の場合はランダムに選択
-  let templateStr = rule.template;
-  if (Array.isArray(rule.template)) {
-    templateStr = rule.template[Math.floor(Math.random() * rule.template.length)];
+  let dataItem = rule.generator ? rule.generator() : {};
+  let templateStr = dataItem.template || rule.template;
+  if (Array.isArray(templateStr)) {
+    templateStr = templateStr[Math.floor(Math.random() * templateStr.length)];
   }
   
   let questionText = templateStr;
@@ -282,7 +383,6 @@ function generateQuestion(topic) {
     questionText = questionText.replace(`{${key}}`, dataItem[key]);
   }
   
-  // 正解の取り出し
   let correctAnswer;
   if (rule.type === "translation" || rule.type === "sentence") {
     correctAnswer = dataItem.en;
@@ -296,32 +396,26 @@ function generateQuestion(topic) {
     correctAnswer = dataItem.answer;
   }
   
-  // 出題形式をランダムに決定（multiple もしくは writing）
   const qType = Math.random() < 0.5 ? "multiple" : "writing";
-  if (qType === "multiple" && rule.data && rule.data.length > 1) {
-    let wrongPool = rule.data.filter(item => {
-      let ans;
+  if (qType === "multiple" && rule.generator && rule.type !== "writing") {
+    let wrongOptions = [];
+    for (let i = 0; i < 10 && wrongOptions.length < 3; i++) {
+      const candidate = rule.generator();
+      let candidateAnswer;
       if (rule.type === "translation" || rule.type === "sentence") {
-        ans = item.en;
+        candidateAnswer = candidate.en;
       } else if (rule.type === "fill-in-the-blank") {
-        ans = item.answer;
+        candidateAnswer = candidate.answer;
       } else if (rule.type === "verb") {
-        ans = item.future;
+        candidateAnswer = candidate.future;
       }
-      return ans && ans !== correctAnswer;
-    });
-    wrongPool.sort(() => 0.5 - Math.random());
-    let wrongOptions = wrongPool.slice(0, 3).map(item => {
-      if (rule.type === "translation" || rule.type === "sentence") {
-        return item.en;
-      } else if (rule.type === "fill-in-the-blank") {
-        return item.answer;
-      } else if (rule.type === "verb") {
-        return item.future;
-      } else {
-        return "";
+      if (candidateAnswer && candidateAnswer !== correctAnswer && !wrongOptions.includes(candidateAnswer)) {
+        wrongOptions.push(candidateAnswer);
       }
-    });
+    }
+    if (wrongOptions.length < 3) {
+      wrongOptions = wrongOptions.concat(["option1", "option2", "option3"]).slice(0,3);
+    }
     const options = wrongOptions.concat(correctAnswer);
     options.sort(() => 0.5 - Math.random());
     return {
@@ -339,7 +433,6 @@ function generateQuestion(topic) {
   }
 }
 
-// autoGenerateQuestions()は指定トピックでcount件の問題を生成します。
 function autoGenerateQuestions(topic, count) {
   const questions = [];
   for (let i = 0; i < count; i++) {
@@ -349,7 +442,8 @@ function autoGenerateQuestions(topic, count) {
 }
 
 // ───────── UI処理 ─────────
-// ステージ／レッスンのデータ構造（日本語表記も充実）
+
+// 固定ステージ＋苦手なコンテンツステージ
 const stages = [
   {
     name: "Stage 1: 基礎",
@@ -384,12 +478,37 @@ let currentStageIndex = null;
 let currentLessonIndex = null;
 let currentQuestions = [];
 let currentQuestionIndex = 0;
+let currentTopic = null;
 
 function showStages() {
   hideAllSections();
   document.getElementById("stage-selection").classList.remove("hidden");
   const stagesList = document.getElementById("stages-list");
   stagesList.innerHTML = "";
+  
+  // Daily Lesson ボタン設定
+  const dailyBtn = document.getElementById("daily-lesson-btn");
+  const dailyStatus = getDailyLessonStatus();
+  const today = getTodayDate();
+  let dailyText = "Daily Lesson";
+  if (dailyStatus.lastDate === today) {
+    dailyText += ` (完了済み / Streak: ${dailyStatus.streak}日)`;
+    dailyBtn.style.opacity = "0.6";
+    dailyBtn.style.pointerEvents = "none";
+  } else {
+    dailyText += " (今日のレッスン)";
+    dailyBtn.style.opacity = "1";
+    dailyBtn.style.pointerEvents = "auto";
+    dailyBtn.onclick = startDailyLesson;
+  }
+  dailyBtn.innerText = dailyText;
+  
+  // ユーザー保有コイン表示
+  const coinDisplay = document.getElementById("coin-display");
+  const coins = parseInt(getDailyLessonStatus().coins) || 0;
+  coinDisplay.innerText = `保有コイン: ${coins}`;
+  
+  // 固定ステージ表示
   stages.forEach((stage, index) => {
     const stageDiv = document.createElement("div");
     stageDiv.classList.add("stage");
@@ -397,6 +516,16 @@ function showStages() {
     stageDiv.onclick = () => showLessons(index);
     stagesList.appendChild(stageDiv);
   });
+  
+  // 苦手なコンテンツステージ（存在すれば追加）
+  const weakTopics = getWeakTopics();
+  if (weakTopics.length > 0) {
+    const weakStage = document.createElement("div");
+    weakStage.classList.add("stage");
+    weakStage.innerText = "苦手なコンテンツ";
+    weakStage.onclick = showWeakLessons;
+    stagesList.appendChild(weakStage);
+  }
 }
 
 function showLessons(stageIndex) {
@@ -406,13 +535,33 @@ function showLessons(stageIndex) {
   document.getElementById("stage-title").innerText = stages[stageIndex].name;
   const lessonsList = document.getElementById("lessons-list");
   lessonsList.innerHTML = "";
-  stages[stageIndex].lessons.forEach((lesson, index) => {
+  stages[stageIndex].lessons.forEach(lesson => {
     const lessonDiv = document.createElement("div");
     lessonDiv.classList.add("lesson");
     lessonDiv.innerText = lesson.name;
-    lessonDiv.onclick = () => startLesson(index);
+    lessonDiv.onclick = () => startLesson(lesson);
     lessonsList.appendChild(lessonDiv);
   });
+}
+
+function showWeakLessons() {
+  hideAllSections();
+  document.getElementById("lesson-selection").classList.remove("hidden");
+  document.getElementById("stage-title").innerText = "苦手なコンテンツ";
+  const lessonsList = document.getElementById("lessons-list");
+  lessonsList.innerHTML = "";
+  const weakTopics = getWeakTopics();
+  if (weakTopics.length === 0) {
+    lessonsList.innerHTML = "<p>苦手なコンテンツはありません！</p>";
+  } else {
+    weakTopics.forEach(topic => {
+      const lessonDiv = document.createElement("div");
+      lessonDiv.classList.add("lesson");
+      lessonDiv.innerText = "苦手: " + topic;
+      lessonDiv.onclick = () => startWeakLesson(topic);
+      lessonsList.appendChild(lessonDiv);
+    });
+  }
 }
 
 function backToStages() {
@@ -420,19 +569,41 @@ function backToStages() {
 }
 
 function backToLessons() {
-  showLessons(currentStageIndex);
+  if (currentStageIndex !== null) {
+    showLessons(currentStageIndex);
+  } else {
+    showWeakLessons();
+  }
 }
 
-function startLesson(lessonIndex) {
-  currentLessonIndex = lessonIndex;
+function startLesson(lesson) {
+  currentTopic = lesson.topic;
   hideAllSections();
   document.getElementById("lesson-container").classList.remove("hidden");
-
-  const lesson = stages[currentStageIndex].lessons[lessonIndex];
   document.getElementById("lesson-title").innerText = lesson.name;
+  currentQuestions = autoGenerateQuestions(currentTopic, 10);
+  currentQuestionIndex = 0;
+  updateProgress();
+  loadQuestion();
+}
 
-  // 自動生成エンジンで問題を生成（例：10問）
-  currentQuestions = autoGenerateQuestions(lesson.topic, 10);
+function startDailyLesson() {
+  currentTopic = "daily";
+  hideAllSections();
+  document.getElementById("lesson-container").classList.remove("hidden");
+  document.getElementById("lesson-title").innerText = "Daily Lesson";
+  currentQuestions = generateDailyQuestions(10);
+  currentQuestionIndex = 0;
+  updateProgress();
+  loadQuestion();
+}
+
+function startWeakLesson(topic) {
+  currentTopic = topic;
+  hideAllSections();
+  document.getElementById("lesson-container").classList.remove("hidden");
+  document.getElementById("lesson-title").innerText = "苦手: " + topic;
+  currentQuestions = autoGenerateQuestions(topic, 10);
   currentQuestionIndex = 0;
   updateProgress();
   loadQuestion();
@@ -445,17 +616,15 @@ function hideAllSections() {
 }
 
 function loadQuestion() {
+  document.getElementById("feedback").innerText = "";
   const questionData = currentQuestions[currentQuestionIndex];
   const container = document.getElementById("question-container");
   container.innerHTML = "";
-
-  // 問題文表示
   const qElem = document.createElement("div");
   qElem.classList.add("question");
   qElem.innerText = questionData.question;
   container.appendChild(qElem);
-
-  // 出題形式に応じたレンダリング
+  
   if (questionData.type === "multiple") {
     const optionsDiv = document.createElement("div");
     optionsDiv.classList.add("options");
@@ -473,12 +642,11 @@ function loadQuestion() {
     input.classList.add("writing-answer");
     input.placeholder = "答えを入力...";
     container.appendChild(input);
-
+    
     const submitBtn = document.createElement("button");
     submitBtn.innerText = "採点する";
     submitBtn.onclick = () => {
       checkWritingAnswer(input.value);
-      // 回答後、次の問題へフォーカス移動
       document.getElementById("next-btn").focus();
     };
     container.appendChild(submitBtn);
@@ -489,13 +657,19 @@ function loadQuestion() {
 
 function checkMultipleAnswer(element, selectedOption) {
   const qData = currentQuestions[currentQuestionIndex];
+  const feedbackDiv = document.getElementById("feedback");
+  let isCorrect = false;
   if (selectedOption === qData.answer) {
-    element.style.backgroundColor = "#a5d6a7"; // 緑
-    alert("正解！");
+    element.style.backgroundColor = "#a5d6a7";
+    feedbackDiv.innerText = "正解！";
+    feedbackDiv.style.color = "green";
+    isCorrect = true;
   } else {
-    element.style.backgroundColor = "#ef9a9a"; // 赤
-    alert("不正解。");
+    element.style.backgroundColor = "#ef9a9a";
+    feedbackDiv.innerText = "不正解。正しい答えは「" + qData.answer + "」です。";
+    feedbackDiv.style.color = "red";
   }
+  updatePerformance(currentTopic, isCorrect);
   Array.from(document.getElementsByClassName("option")).forEach(opt => {
     opt.style.pointerEvents = "none";
   });
@@ -506,11 +680,17 @@ function checkWritingAnswer(userInput) {
   const qData = currentQuestions[currentQuestionIndex];
   const cleanedInput = userInput.trim().toLowerCase();
   const correctAnswer = qData.answer.trim().toLowerCase();
+  const feedbackDiv = document.getElementById("feedback");
+  let isCorrect = false;
   if (cleanedInput === correctAnswer) {
-    alert("正解！");
+    feedbackDiv.innerText = "正解！";
+    feedbackDiv.style.color = "green";
+    isCorrect = true;
   } else {
-    alert(`不正解。正しい答えは「${qData.answer}」です。`);
+    feedbackDiv.innerText = "不正解。正しい答えは「" + qData.answer + "」です。";
+    feedbackDiv.style.color = "red";
   }
+  updatePerformance(currentTopic, isCorrect);
   const container = document.getElementById("question-container");
   Array.from(container.getElementsByTagName("input")).forEach(inp => inp.disabled = true);
   Array.from(container.getElementsByTagName("button")).forEach(btn => btn.disabled = true);
@@ -523,6 +703,11 @@ function nextQuestion() {
     updateProgress();
     loadQuestion();
   } else {
+    if (currentTopic === "daily") {
+      const status = updateDailyLessonStatus();
+      // Daily Lesson 終了時にボーナスメッセージをフィードバック領域に表示
+      document.getElementById("feedback").innerText = `おめでとう！ ${status.earnedCoins}コイン獲得！ 現在の連続日数: ${status.newStreak}日`;
+    }
     alert("このレッスンは終了です！");
     backToLessons();
   }
