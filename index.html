@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>demolingo - 英語学習アプリ</title>
-  <!-- Google Fonts 例: Roboto -->
+  <!-- Google Fonts: Roboto -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:400,500,700">
   <link rel="stylesheet" href="style.css" />
 </head>
@@ -46,14 +46,27 @@
     <div id="feedback"></div>
     <div class="btn-group">
       <button id="hint-btn" onclick="showHint()" style="display:none;">Hint (5コイン)</button>
+      <button id="bonus-btn" onclick="startBonusChallenge()" style="display:none;">Bonus Challenge (15コイン)</button>
       <button id="next-btn" onclick="nextQuestion()" disabled>次へ</button>
       <button class="back-btn" onclick="backToLessons()">＜ レッスンに戻る</button>
     </div>
   </section>
-<iframe width="640px" height="480px" src="https://forms.office.com/r/NZ0v2YMDiZ?embed=true" frameborder="0" marginwidth="0" marginheight="0" style="border: none; max-width:100%; max-height:100vh" allowfullscreen webkitallowfullscreen mozallowfullscreen msallowfullscreen> </iframe>
-  <!-- フッター：設定画面（データリセット等） -->
+
+  <!-- アップデート履歴ページ -->
+  <section id="update-history" class="hidden">
+    <h2>アップデート履歴</h2>
+    <ul>
+      <li>2025-02-19: リスニング・スピーキング重点練習、Bonus Challenge、コインシステム強化を実装。</li>
+      <li>2025-01-10: Daily Lessonと苦手なコンテンツ機能追加。</li>
+      <li>2024-12-01: demolingo 初回リリース。</li>
+    </ul>
+    <button onclick="hideUpdateHistory()">閉じる</button>
+  </section>
+
+  <!-- フッター：設定＆アップデート履歴 -->
   <footer>
     <button id="reset-btn" onclick="resetData()">Reset Data</button>
+    <button id="update-history-btn" onclick="showUpdateHistory()">アップデート履歴</button>
     <p>&copy; demolingo 2025</p>
   </footer>
 
