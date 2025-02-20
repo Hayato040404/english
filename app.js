@@ -1,5 +1,5 @@
 // ───────── 自動生成エンジン ─────────
-// すべてのレッスンは generator 関数により、ランダムな英文・日本語訳・テンプレートで自動生成されます
+// 各レッスンは generator 関数によりランダムな英文・日本語訳・テンプレートで自動生成されます
 
 const grammarRules = {
   // 挨拶（Greetings）
@@ -292,6 +292,26 @@ const grammarRules = {
       const templateStr = templates[Math.floor(Math.random() * templates.length)];
       return { sentence: activeSentence, answer: passiveSentence, template: templateStr };
     }
+  },
+  // リスニング問題（Listening）
+  listening: {
+    type: "listening",
+    generator: function() {
+      const sentences = [
+        { en: "The cat is sleeping on the mat.", jp: "猫がマットの上で寝ています" },
+        { en: "She is reading a book in the library.", jp: "彼女は図書館で本を読んでいます" },
+        { en: "They are playing soccer in the park.", jp: "彼らは公園でサッカーをしています" },
+        { en: "I am cooking dinner for my family.", jp: "家族のために夕食を作っています" },
+        { en: "He is driving to work every day.", jp: "彼は毎日車で仕事に行っています" }
+      ];
+      const templates = [
+        'Listen to the audio and type what you hear.',
+        'リスニング：音声を聞いて、その内容を入力してください。'
+      ];
+      const item = sentences[Math.floor(Math.random() * sentences.length)];
+      const templateStr = templates[Math.floor(Math.random() * templates.length)];
+      return { ...item, template: templateStr };
+    }
   }
 };
 
@@ -319,6 +339,14 @@ function getWeakTopics() {
   return weak;
 }
 
+// ───────── グローバルコイン管理 ─────────
+function getCoins() {
+  return parseInt(localStorage.getItem("coins") || "0");
+}
+function addCoins(amount) {
+  localStorage.setItem("coins", (getCoins() + amount).toString());
+}
+
 // ───────── Daily Lesson 機能 ─────────
 function getTodayDate() {
   return new Date().toISOString().split("T")[0];
@@ -327,29 +355,27 @@ function getTodayDate() {
 function getDailyLessonStatus() {
   return {
     lastDate: localStorage.getItem("lastDailyLesson"),
-    streak: parseInt(localStorage.getItem("dailyStreak") || "0"),
-    coins: parseInt(localStorage.getItem("dailyCoins") || "0")
+    streak: parseInt(localStorage.getItem("dailyStreak") || "0")
   };
 }
 
 function updateDailyLessonStatus() {
   const today = getTodayDate();
   const status = getDailyLessonStatus();
-  if (status.lastDate === today) return;
+  if (status.lastDate === today) return status;
   const yesterday = new Date();
   yesterday.setDate(yesterday.getDate() - 1);
   const yesterdayStr = yesterday.toISOString().split("T")[0];
   let newStreak = (status.lastDate === yesterdayStr) ? status.streak + 1 : 1;
-  // 毎日レッスンでコインを獲得（例：10コイン＋連続日数ボーナス）
-  const earnedCoins = 10 + newStreak;
+  const earnedCoins = 10 + newStreak;  // Daily Lesson報酬
   localStorage.setItem("lastDailyLesson", today);
   localStorage.setItem("dailyStreak", newStreak.toString());
-  localStorage.setItem("dailyCoins", (status.coins + earnedCoins).toString());
-  return { newStreak, earnedCoins };
+  addCoins(earnedCoins);
+  return { newStreak, earnedCoins, coins: getCoins() };
 }
 
 function generateDailyQuestions(count) {
-  const topics = ["greetings", "phrases", "presentContinuous", "beVerb", "will", "modals", "comparative", "conditional", "passiveVoice", "past", "future", "questionFormation"];
+  const topics = ["greetings", "phrases", "presentContinuous", "beVerb", "will", "modals", "comparative", "conditional", "passiveVoice", "past", "future", "questionFormation", "listening"];
   const questions = [];
   for (let i = 0; i < count; i++) {
     const randomTopic = topics[Math.floor(Math.random() * topics.length)];
@@ -394,6 +420,16 @@ function generateQuestion(topic) {
     correctAnswer = dataItem.answer;
   } else if (rule.type === "writing") {
     correctAnswer = dataItem.answer;
+  } else if (rule.type === "listening") {
+    correctAnswer = dataItem.en;
+  }
+  
+  if (rule.type === "listening") {
+    return {
+      type: "listening",
+      question: questionText,
+      answer: correctAnswer
+    };
   }
   
   const qType = Math.random() < 0.5 ? "multiple" : "writing";
@@ -505,8 +541,7 @@ function showStages() {
   
   // ユーザー保有コイン表示
   const coinDisplay = document.getElementById("coin-display");
-  const coins = parseInt(getDailyLessonStatus().coins) || 0;
-  coinDisplay.innerText = `保有コイン: ${coins}`;
+  coinDisplay.innerText = `保有コイン: ${getCoins()}`;
   
   // 固定ステージ表示
   stages.forEach((stage, index) => {
@@ -517,7 +552,7 @@ function showStages() {
     stagesList.appendChild(stageDiv);
   });
   
-  // 苦手なコンテンツステージ（存在すれば追加）
+  // 苦手なコンテンツステージ
   const weakTopics = getWeakTopics();
   if (weakTopics.length > 0) {
     const weakStage = document.createElement("div");
@@ -583,6 +618,7 @@ function startLesson(lesson) {
   document.getElementById("lesson-title").innerText = lesson.name;
   currentQuestions = autoGenerateQuestions(currentTopic, 10);
   currentQuestionIndex = 0;
+  addCoins(5);  // 通常レッスン完了時に5コイン獲得
   updateProgress();
   loadQuestion();
 }
@@ -650,6 +686,30 @@ function loadQuestion() {
       document.getElementById("next-btn").focus();
     };
     container.appendChild(submitBtn);
+  } else if (questionData.type === "listening") {
+    // リスニングの場合：音声再生ボタン＋回答入力
+    const playBtn = document.createElement("button");
+    playBtn.innerText = "再生 / Play Audio";
+    playBtn.onclick = () => {
+      const utterance = new SpeechSynthesisUtterance(questionData.answer);
+      utterance.lang = "en-US";
+      speechSynthesis.speak(utterance);
+    };
+    container.appendChild(playBtn);
+    
+    const input = document.createElement("input");
+    input.type = "text";
+    input.classList.add("writing-answer");
+    input.placeholder = "聞こえた内容を入力...";
+    container.appendChild(input);
+    
+    const submitBtn = document.createElement("button");
+    submitBtn.innerText = "採点する";
+    submitBtn.onclick = () => {
+      checkWritingAnswer(input.value);
+      document.getElementById("next-btn").focus();
+    };
+    container.appendChild(submitBtn);
   }
   
   document.getElementById("next-btn").disabled = true;
@@ -705,8 +765,11 @@ function nextQuestion() {
   } else {
     if (currentTopic === "daily") {
       const status = updateDailyLessonStatus();
-      // Daily Lesson 終了時にボーナスメッセージをフィードバック領域に表示
-      document.getElementById("feedback").innerText = `おめでとう！ ${status.earnedCoins}コイン獲得！ 現在の連続日数: ${status.newStreak}日`;
+      document.getElementById("feedback").innerText = `おめでとう！ ${status.earnedCoins}コイン獲得！ 連続日数: ${status.newStreak}日`;
+    } else if (currentTopic !== "daily") {
+      // 通常レッスン完了時も5コイン獲得
+      addCoins(5);
+      document.getElementById("feedback").innerText = "このレッスンを完了して5コイン獲得！";
     }
     alert("このレッスンは終了です！");
     backToLessons();
@@ -717,6 +780,16 @@ function updateProgress() {
   const progressElem = document.getElementById("progress");
   const progressPercent = ((currentQuestionIndex) / currentQuestions.length) * 100;
   progressElem.style.width = `${progressPercent}%`;
+}
+
+function generateDailyQuestions(count) {
+  const topics = ["greetings", "phrases", "presentContinuous", "beVerb", "will", "modals", "comparative", "conditional", "passiveVoice", "past", "future", "questionFormation", "listening"];
+  const questions = [];
+  for (let i = 0; i < count; i++) {
+    const randomTopic = topics[Math.floor(Math.random() * topics.length)];
+    questions.push(generateQuestion(randomTopic));
+  }
+  return questions;
 }
 
 window.onload = showStages;
