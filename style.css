@@ -1,12 +1,13 @@
-/* ベーススタイル */
+/* 基本設定 */
 * {
   box-sizing: border-box;
 }
 body {
   margin: 0;
-  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-family: 'Roboto', sans-serif;
   background-color: #f0f8f5;
   text-align: center;
+  color: #333;
 }
 
 /* ヘッダー */
@@ -17,14 +18,15 @@ header {
 }
 header h1 {
   margin: 0;
-  font-size: 2em;
+  font-size: 2.5em;
+  font-weight: 500;
 }
 header p {
   margin: 5px 0 0;
   font-size: 1.2em;
 }
 
-/* セクション共通 */
+/* セクション */
 section {
   width: 90%;
   max-width: 600px;
@@ -75,10 +77,11 @@ section {
   padding: 15px;
   width: 40%;
   cursor: pointer;
-  transition: background-color 0.2s;
+  transition: background-color 0.3s, transform 0.2s;
 }
 .stage:hover, .lesson:hover {
   background-color: #d0f0c0;
+  transform: translateY(-3px);
 }
 
 /* レッスン画面 */
@@ -88,8 +91,6 @@ section {
   align-items: center;
   margin-bottom: 20px;
 }
-
-/* 進捗バー */
 #progress-bar {
   width: 80%;
   background-color: #eee;
@@ -102,12 +103,12 @@ section {
   height: 100%;
   background-color: #58cc02;
   width: 0%;
-  transition: width 0.3s;
+  transition: width 0.4s;
 }
 
 /* 問題文 */
 .question {
-  font-size: 1.2em;
+  font-size: 1.3em;
   margin-bottom: 20px;
 }
 
@@ -131,7 +132,7 @@ section {
   background-color: #f1f1f1;
 }
 
-/* ライティング問題 */
+/* ライティング / リスニング / スピーキング入力欄 */
 .writing-answer {
   width: 80%;
   padding: 10px;
@@ -172,6 +173,22 @@ button:hover {
 
 .btn-group {
   margin-top: 20px;
+}
+
+/* フッター */
+footer {
+  margin-top: 30px;
+  padding: 10px;
+  background-color: #ddd;
+  font-size: 0.9em;
+}
+footer button {
+  background-color: #f44336;
+  border: 2px solid #e53935;
+  margin-bottom: 5px;
+}
+footer button:hover {
+  background-color: #e53935;
 }
 
 /* レスポンシブ対応 */
